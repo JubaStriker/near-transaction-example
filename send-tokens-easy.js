@@ -1,4 +1,4 @@
-const nearAPI  = require('near-api-js');
+const nearAPI = require('near-api-js');
 const { connect, KeyPair, keyStores, utils } = nearAPI;
 
 //this is required if using a local .env file for private key
@@ -6,8 +6,8 @@ require('dotenv').config();
 
 // configure accounts, network, and amount of NEAR to send
 // converts NEAR amount into yoctoNEAR (10^-24) using a near-api-js utility
-const sender = 'sender.testnet';
-const receiver = 'receiver.testnet';
+const sender = 'jubastriker.testnet';
+const receiver = 'jubastriker2.testnet';
 const networkId = 'testnet';
 const amount = utils.format.parseNearAmount('1.5');
 
@@ -45,7 +45,7 @@ async function main() {
     console.log('OPEN LINK BELOW to see transaction in NEAR Explorer!');
     console.log(`${config.explorerUrl}/transactions/${result.transaction.hash}`);
     console.log('--------------------------------------------------------------------------------------------');
-  } catch(error) {
+  } catch (error) {
     // return an error if unsuccessful
     console.log(error);
   }

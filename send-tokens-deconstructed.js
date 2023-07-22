@@ -5,10 +5,10 @@ require('dotenv').config();
 
 // configure accounts, network, and amount of NEAR to send
 // the amount is converted into yoctoNEAR (10^-24) using a near-api-js utility
-const sender = 'sender.testnet';
-const receiver = 'receiver.testnet';
+const sender = 'jubastriker.testnet';
+const receiver = 'jubastriker2.testnet';
 const networkId = 'testnet';
-const amount = nearAPI.utils.format.parseNearAmount('1.5');
+const amount = nearAPI.utils.format.parseNearAmount('10');
 
 // sets up a NEAR API/RPC provider to interact with the blockchain
 const provider = new nearAPI.providers
@@ -30,7 +30,7 @@ async function main() {
   );
 
   // checks to make sure provided key is a full access key
-  if(accessKey.permission !== 'FullAccess') {
+  if (accessKey.permission !== 'FullAccess') {
     return console.log(
       `Account [ ${sender} ] does not have permission to send tokens using key: [ ${publicKey} ]`
     );
@@ -42,26 +42,26 @@ async function main() {
 
   // constructs actions that will be passed to the createTransaction method below
   const actions = [nearAPI.transactions.transfer(amount)];
-  
+
   // converts a recent block hash into an array of bytes 
   // this hash was retrieved earlier when creating the accessKey (Line 26)
   // this is required to prove the tx was recently constructed (within 24hrs)
   const recentBlockHash = nearAPI.utils.serialize.base_decode(accessKey.block_hash);
- 
+
   // create transaction
   const transaction = nearAPI.transactions.createTransaction(
-    sender, 
-    publicKey, 
-    receiver, 
-    nonce, 
-    actions, 
+    sender,
+    publicKey,
+    receiver,
+    nonce,
+    actions,
     recentBlockHash
   );
 
   // before we can sign the transaction we must perform three steps...
   // 1) serialize the transaction in Borsh
   const serializedTx = nearAPI.utils.serialize.serialize(
-    nearAPI.transactions.SCHEMA, 
+    nearAPI.transactions.SCHEMA,
     transaction
   );
   // 2) hash the serialized transaction using sha256
@@ -72,9 +72,9 @@ async function main() {
   // now we can sign the transaction :)
   const signedTransaction = new nearAPI.transactions.SignedTransaction({
     transaction,
-    signature: new nearAPI.transactions.Signature({ 
-      keyType: transaction.publicKey.keyType, 
-      data: signature.signature 
+    signature: new nearAPI.transactions.Signature({
+      keyType: transaction.publicKey.keyType,
+      data: signature.signature
     })
   });
 
@@ -84,7 +84,7 @@ async function main() {
     const signedSerializedTx = signedTransaction.encode();
     // sends transaction to NEAR blockchain via JSON RPC call and records the result
     const result = await provider.sendJsonRpc(
-      'broadcast_tx_commit', 
+      'broadcast_tx_commit',
       [Buffer.from(signedSerializedTx).toString('base64')]
     );
     // console results :)
@@ -93,7 +93,8 @@ async function main() {
     console.log('OPEN LINK BELOW to see transaction in NEAR Explorer!');
     console.log(`$https://explorer.${networkId}.near.org/transactions/${result.transaction.hash}`);
     console.log('--------------------------------------------------------------------------------------------');
-  } catch(error) {
+  }
+  catch (error) {
     console.log(error);
   }
 }
